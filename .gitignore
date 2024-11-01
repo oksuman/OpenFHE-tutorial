@@ -30,3 +30,34 @@
 *.exe
 *.out
 *.app
+
+# .vscode config
+.vscode/
+
+# CMake 
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# build directories
+/build/
+cmake-build-*/
+
+# etc
+*.log
+*.tmp
+*.swp
+*.DS_Store
+Thumbs.db
+
+# macOS specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows specific files
+*.stackdump
+
+# macOS debug symbols
+*.dSYM/
