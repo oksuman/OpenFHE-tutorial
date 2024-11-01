@@ -49,7 +49,7 @@ TEST_F(Practice2Test, DotProductTest) {
     std::vector<double> input1 = {-1.0, 0.5, 1.5, 2.0};
     std::vector<double> input2 = {1.0, -0.5, 1.0, -1.5};
     double expected_dot =
-        -1.75; // (-1.0*1.0) + (0.5*-0.5) + (1.5*1.0) + (2.0*-1.5)
+        -2.75; // (-1.0*1.0) + (0.5*-0.5) + (1.5*1.0) + (2.0*-1.5)
 
     auto plain1 = cc->MakeCKKSPackedPlaintext(input1);
     auto plain2 = cc->MakeCKKSPackedPlaintext(input2);

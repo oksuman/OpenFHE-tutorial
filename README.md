@@ -105,6 +105,4 @@ OpenFHE-Tutorial/
 ```
 
 ## Note
-- Make sure OpenFHE is properly installed and can be found by CMake
-- Each practice problem has its own test cases to verify your implementation
-- The tutorial examples can be used as reference for implementing practice problems
+- Solutions for practice problems are available in the `solution` branch (`git checkout solution`)
