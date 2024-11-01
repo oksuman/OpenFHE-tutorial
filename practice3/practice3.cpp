@@ -3,56 +3,56 @@
 Ciphertext<DCRTPoly> Practice3::customRotate(const CryptoContext<DCRTPoly> cc,
                                              const Ciphertext<DCRTPoly> input,
                                              int32_t index) {
-    /**
-     * TODO: Implement arbitrary rotation using only available rotation keys
-     *
-     * Given:
-     * - Batch size is 8
-     * - Available rotation keys are {-4,-2,-1,1,2,4}
-     *
-     * Task:
-     * - Implement a function that can perform any rotation amount
-     * - Example: rotation by 7 should be possible using combination of given
-     * keys
-     *
-     * Example:
-     * input = {1, 2, 3, 4, 5, 6, 7, 8}
-     * index = 3
-     * output = {6, 7, 8, 1, 2, 3, 4, 5}
-     */
-    return nullptr;
+    if (index == 0)
+        return input;
+
+    auto result = input->Clone();
+    int l = abs(index);
+
+    while (l > 0) {
+        int largestPowerOf2 = 1 << static_cast<int>(log2(l));
+        if (largestPowerOf2 > 4) {
+            largestPowerOf2 = 4;
+        }
+
+        result = cc->EvalRotate(result, (index > 0) ? largestPowerOf2
+                                                    : -largestPowerOf2);
+        l -= largestPowerOf2;
+    }
+
+    return result;
 }
 
 Ciphertext<DCRTPoly>
 Practice3::permutateVector(const CryptoContext<DCRTPoly> cc,
                            const Ciphertext<DCRTPoly> input) {
-    /**
-     * TODO: Implement specific permutation using rotations
-     *
-     * Given vector [a b c d e f g h], create [b c d a f g h e]
-     *
-     * Example:
-     * input = {1, 2, 3, 4, 5, 6, 7, 8}
-     * output = {2, 3, 4, 1, 6, 7, 8, 5}
-     */
-    return nullptr;
+    auto mask1 = cc->MakeCKKSPackedPlaintext(
+        std::vector<double>{1, 1, 1, 0, 1, 1, 1, 0});
+    auto part1 = customRotate(cc, input, 1);
+    part1 = cc->EvalMult(part1, mask1);
+
+    auto mask2 = cc->MakeCKKSPackedPlaintext(
+        std::vector<double>{0, 0, 0, 1, 0, 0, 0, 1});
+    auto part2 = customRotate(cc, input, -3);
+    part2 = cc->EvalMult(part2, mask2);
+
+    return cc->EvalAdd(part1, part2);
 }
 
 Ciphertext<DCRTPoly>
 Practice3::efficientCubicPolynomial(const CryptoContext<DCRTPoly> cc,
                                     const Ciphertext<DCRTPoly> x) {
-    /**
-     * TODO: Compute 1 + 3x + 0.2x³ using only depth 2
-     *
-     * Challenge:
-     * - Implement the same cubic polynomial as in Practice1
-     * - Use only multiplicative depth 2 (optimize the multiplication chain)
-     *
-     * Example:
-     * x = {1, 2, -1.5, 0.5}
-     * output = {4.2, 11.6, -2.325, 1.525}
-     */
-    return nullptr;
+    auto const_term = cc->EvalMult(x, 0.0);
+    const_term = cc->EvalAdd(const_term, 1.0);
+
+    auto linear_term = cc->EvalMult(x, 3.0);
+
+    auto x_squared = cc->EvalMultAndRelinearize(x, x);
+    auto temp = cc->EvalMult(x, 0.2);
+    auto cubic_term = cc->EvalMultAndRelinearize(temp, x_squared);
+
+    auto result = cc->EvalAdd(const_term, linear_term);
+    return cc->EvalAdd(result, cubic_term);
 }
 
 std::vector<double>
@@ -61,6 +61,6 @@ Practice3::decrypt_and_decode(const CryptoContext<DCRTPoly> &cc,
                               const PrivateKey<DCRTPoly> &sk) {
     Plaintext plaintext;
     cc->Decrypt(sk, ciphertext, &plaintext);
-    plaintext->SetLength(8); // Note: batch size is 8 for Practice3
+    plaintext->SetLength(8);
     return plaintext->GetRealPackedValue();
 }

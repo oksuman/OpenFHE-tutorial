@@ -1,37 +1,29 @@
 #include "practice2.h"
 
-Ciphertext<lbcrypto::DCRTPoly>
+Ciphertext<DCRTPoly>
 Practice2::computeAverage(const CryptoContext<DCRTPoly> cc,
-                          const Ciphertext<lbcrypto::DCRTPoly> vector) {
-    /**
-     * TODO: Compute the average of encrypted vector values
-     * The result should be a vector where all elements are the average
-     *
-     * Example:
-     * vector = {2, 4, 6, 8}
-     * output = {5, 5, 5, 5}  // (2+4+6+8)/4 = 5
-     *
-     * Hint:
-     * - Rotation operation is available
-     * - Rotation keys for {-4,-3,-2,-1,1,2,3,4} are provided
-     */
-    return nullptr;
+                          const Ciphertext<DCRTPoly> vector) {
+    auto sum = vector;
+
+    for (int i = 1; i < 4; i++) {
+        auto rotated = cc->EvalRotate(vector, i);
+        sum = cc->EvalAdd(sum, rotated);
+    }
+
+    return cc->EvalMult(sum, 0.25);
 }
 
-Ciphertext<lbcrypto::DCRTPoly>
+Ciphertext<DCRTPoly>
 Practice2::computeDotProduct(const CryptoContext<DCRTPoly> cc,
-                             const Ciphertext<lbcrypto::DCRTPoly> vector1,
-                             const Ciphertext<lbcrypto::DCRTPoly> vector2) {
-    /**
-     * TODO: Compute the dot product of two encrypted vectors
-     * The result should be a vector where all elements are the dot product
-     *
-     * Example:
-     * vector1 = {1, 2, 3, 4}
-     * vector2 = {2, 3, 4, 5}
-     * output = {40, 40, 40, 40}  // 1*2 + 2*3 + 3*4 + 4*5 = 40
-     */
-    return nullptr;
+                             const Ciphertext<DCRTPoly> vector1,
+                             const Ciphertext<DCRTPoly> vector2) {
+    auto product = cc->EvalMultAndRelinearize(vector1, vector2);
+
+    for (int i = 1; i <= log2(4); i++) {
+        cc->EvalAddInPlace(product, cc->EvalRotate(product, 4 / (1 << i)));
+    }
+
+    return product;
 }
 
 std::vector<double>

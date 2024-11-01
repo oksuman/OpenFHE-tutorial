@@ -1,48 +1,37 @@
 #include "practice1.h"
 
-Ciphertext<lbcrypto::DCRTPoly>
+Ciphertext<DCRTPoly>
 Practice1::evaluateLinearPolynomial(const CryptoContext<DCRTPoly> cc,
-                                    const Ciphertext<lbcrypto::DCRTPoly> x,
-                                    const Ciphertext<lbcrypto::DCRTPoly> y) {
-    /**
-     * TODO: Evaluate 2x + y using encrypted values
-     *
-     * Example:
-     * x = {1, 2, 3, 4}
-     * y = {2, 1, 1, 2}
-     * output = {4, 5, 7, 10}
-     */
-    return nullptr;
+                                    const Ciphertext<DCRTPoly> x,
+                                    const Ciphertext<DCRTPoly> y) {
+
+    auto twice_x = cc->EvalMult(x, 2.0);
+    return cc->EvalAdd(twice_x, y);
 }
 
-Ciphertext<lbcrypto::DCRTPoly>
+Ciphertext<DCRTPoly>
 Practice1::computeTriangleArea(const CryptoContext<DCRTPoly> cc,
-                               const Ciphertext<lbcrypto::DCRTPoly> base,
-                               const Ciphertext<lbcrypto::DCRTPoly> height) {
-    /**
-     * TODO: Compute triangle areas from encrypted base and height values
-     *
-     * Formula: area = (base * height) / 2
-     *
-     * Example:
-     * base = {2, 3, 4, 5}
-     * height = {3, 4, 5, 6}
-     * output = {3, 6, 10, 15}
-     */
-    return nullptr;
+                               const Ciphertext<DCRTPoly> base,
+                               const Ciphertext<DCRTPoly> height) {
+    auto area = cc->EvalMultAndRelinearize(base, height);
+    return cc->EvalMult(area, 0.5);
 }
 
-Ciphertext<lbcrypto::DCRTPoly>
+Ciphertext<DCRTPoly>
 Practice1::evaluateCubicPolynomial(const CryptoContext<DCRTPoly> cc,
-                                   const Ciphertext<lbcrypto::DCRTPoly> x) {
-    /**
-     * TODO: Evaluate 1 + 3x + 0.2x³ using encrypted x values
-     *
-     * Example:
-     * x = {1, 2, 3, 4}
-     * output = {4.2, 11.6, 25.4, 49.2}
-     */
-    return nullptr;
+                                   const Ciphertext<DCRTPoly> x) {
+
+    auto const_term = cc->EvalMult(x, 0.0);
+    const_term = cc->EvalAdd(const_term, 1.0);
+
+    auto linear_term = cc->EvalMult(x, 3.0);
+
+    auto x_squared = cc->EvalMultAndRelinearize(x, x);
+    auto x_cubed = cc->EvalMultAndRelinearize(x_squared, x);
+    auto cubic_term = cc->EvalMult(x_cubed, 0.2);
+
+    auto result = cc->EvalAdd(const_term, linear_term);
+    return cc->EvalAdd(result, cubic_term);
 }
 
 std::vector<double>
