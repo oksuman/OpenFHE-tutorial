@@ -1,6 +1,6 @@
 # OpenFHE-Tutorial
 
-This repository is designed to help OpenFHE beginners practice and understand the core functionalities of OpenFHE CKKS implementation. Through tutorials and practice problems, users can gain hands-on experience with homomorphic encryption operations.
+This repository is designed to help OpenFHE beginners practice and understand the core functionalities of OpenFHE CKKS implementation. 
 
 ## Requirements
 
@@ -36,7 +36,7 @@ git --version
 ### Building the Project
 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/OpenFHE-tutorial.git
+git clone https://github.com/oksuman/OpenFHE-tutorial.git
 cd OpenFHE-tutorial
 ```
 
