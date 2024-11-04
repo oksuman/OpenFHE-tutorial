@@ -22,7 +22,6 @@ int main() {
         - Ring dimension can be set manually.
         - Try different batch sizes!
     */
-
     uint32_t multDepth = 2;
     uint32_t scaleModSize = 50;
     SecurityLevel securityLevel = HEStd_128_classic;
@@ -143,10 +142,9 @@ int main() {
     ptx_add3->SetLength(4);
     std::vector<double> msg_add3 = ptx_add3->GetRealPackedValue();
     std::cout << "msg1 + msg2: " << msg_add3 << std::endl;
-    std::cout << std::endl;
 
     // 1-4) Ciphertext-Ciphertext Subtraction
-    auto ctx_add4 = cc->EvalSub(ctx1, ctx1);
+    auto ctx_add4 = cc->EvalSub(ctx1, ctx2);
 
     Plaintext ptx_add4;
     cc->Decrypt(keyPair.secretKey, ctx_add4, &ptx_add4);

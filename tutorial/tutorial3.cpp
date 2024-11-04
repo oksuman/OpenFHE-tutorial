@@ -1,6 +1,6 @@
 /*
  * OpenFHE Library Integration
- * This example demonstrates basic CKKS operations using OpenFHE
+ * This example demonstrates bootstrapping of the CKKS scheme using OpenFHE
  */
 #include "openfhe.h"
 
