@@ -36,8 +36,14 @@ git --version
 ### Building the Project
 1. Clone the repository
 ```bash
-git clone https://github.com/oksuman/OpenFHE-tutorial.git
+git clone --recursive https://github.com/oksuman/OpenFHE-tutorial.git
 cd OpenFHE-tutorial
+```
+
+Note:If you have already clone the repository without `--recursive`, run:
+```bash
+git submodule init
+git submodule update
 ```
 
 2. Create and enter build directory
